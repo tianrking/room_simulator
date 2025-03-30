@@ -1,0 +1,37 @@
+/* src/index.css */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  /* background-color: #242424; */ /* 注释或删除 Vite 的默认背景色 */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0; /* 移除默认的外边距 */
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #111; /* 设置一个深色背景 */
+  overflow: hidden; /* 隐藏可能出现的滚动条 */
+}
+
+#root {
+  width: 100vw; /* 视口宽度 */
+  height: 100vh; /* 视口高度 */
+  margin: 0 auto; /* 水平居中（虽然已经是100%宽度了） */
+  padding: 0; /* 移除默认的内边距 */
+  text-align: center;
+  overflow: hidden; /* 再次确保内容不会溢出导致滚动条 */
+}
+
+/* 你可以删除或注释掉其他由 Vite 模板生成的默认样式，
+   例如 .logo, h1, .card 等，它们现在不需要了 */

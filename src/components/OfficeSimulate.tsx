@@ -184,7 +184,7 @@ const OfficeSimulate: React.FC = () => {
           }}
           onClick={() => setOfficeState(OfficeState.WORKING)}
         >
-          工作状态
+          Working
         </button>
         <button
           style={{
@@ -198,7 +198,7 @@ const OfficeSimulate: React.FC = () => {
           }}
           onClick={() => setOfficeState(OfficeState.LUNCH_TIME)}
         >
-          午餐时间
+          Lunch Time
         </button>
         <button
           style={{
@@ -212,7 +212,7 @@ const OfficeSimulate: React.FC = () => {
           }}
           onClick={() => setOfficeState(OfficeState.ARRIVING)}
         >
-          上班时间
+          Arriving
         </button>
         <button
           style={{
@@ -226,7 +226,7 @@ const OfficeSimulate: React.FC = () => {
           }}
           onClick={() => setOfficeState(OfficeState.LEAVING)}
         >
-          下班时间
+          Leaving
         </button>
       </div>
     );
@@ -237,16 +237,16 @@ const OfficeSimulate: React.FC = () => {
     let stateInfo = "";
     switch (officeState) {
       case OfficeState.WORKING:
-        stateInfo = "正常工作时间: 员工在各自工位工作，偶尔走动休息";
+        stateInfo = "Normal working hours: Employees work at their desks, occasionally taking breaks to move around.";
         break;
       case OfficeState.LUNCH_TIME:
-        stateInfo = "午餐时间: 大部分员工前往休息区或茶水间用餐";
+        stateInfo = "Lunch time: Most employees head to the break area or pantry for meals.";
         break;
       case OfficeState.ARRIVING:
-        stateInfo = "上班时间: 员工陆续从入口进入，前往各自工位";
+        stateInfo = "Arriving time: Employees gradually enter from the entrance and head to their desks.";
         break;
       case OfficeState.LEAVING:
-        stateInfo = "下班时间: 员工收拾物品，陆续离开办公室";
+        stateInfo = "Leaving time: Employees pack up their belongings and gradually leave the office.";
         break;
     }
 
@@ -263,9 +263,9 @@ const OfficeSimulate: React.FC = () => {
       }}>
         <h3 style={{ margin: '0 0 8px 0' }}>{stateInfo}</h3>
         <p style={{ margin: '0', fontSize: '14px' }}>
-          人员: {people.length}名 |
-          障碍物: {obstacles.length}个 |
-          热点区域: {hotspots.length}个
+          Personnel: {people.length} |
+          Obstacles: {obstacles.length} |
+          Hotspot_Areas: {hotspots.length}
         </p>
       </div>
     );

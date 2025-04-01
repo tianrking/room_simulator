@@ -1,5 +1,5 @@
 // src/components/RotatingTorusKnot.tsx
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
@@ -9,7 +9,7 @@ function RotatingTorusKnot() {
   const [hovered, setHover] = useState(false);
   const [active, setActive] = useState(false);
 
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
       // 可以设置不同的旋转速度
       meshRef.current.rotation.x += delta * 0.1;

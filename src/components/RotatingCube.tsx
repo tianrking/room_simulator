@@ -1,5 +1,5 @@
 // src/components/RotatingCube.tsx
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber'; // 导入 useFrame Hook 用于动画
 import * as THREE from 'three'; // 导入 THREE 核心库，主要用于类型定义
 
@@ -12,7 +12,7 @@ function RotatingCube() {
   const [active, setActive] = useState(false);
 
   // useFrame Hook 会在每一帧渲染前执行传入的回调函数
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     if (meshRef.current) {
       // 让立方体持续旋转
       meshRef.current.rotation.x += delta * 0.4; // 乘以 delta 保证不同帧率下速度一致

@@ -1,5 +1,5 @@
 // src/components/Person.tsx
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { OfficeState } from './OfficeSimulate';
@@ -77,7 +77,7 @@ const Person: React.FC<PersonProps> = ({
     // 行为时间控制
     const hotspotTimerRef = useRef<number>(0); // 在热点停留的时间
     const hotspotDurationRef = useRef<number>(0); // 应停留的总时间
-    const lastStateChangeRef = useRef<number>(0); // 上次状态变更的时间
+    // const lastStateChangeRef = useRef<number>(0); // 上次状态变更的时间
     const nextStateChangeRef = useRef<number>(0); // 下次状态变更的时间
 
     // 寻路和碰撞避免
@@ -500,7 +500,7 @@ const Person: React.FC<PersonProps> = ({
     const generatePathPoints = (start: THREE.Vector3, end: THREE.Vector3, numPoints: number = 3) => {
         // 基本方向和距离
         const directionVector = end.clone().sub(start);
-        const distance = directionVector.length();
+        // const distance = directionVector.length();
         const normalizedDirection = directionVector.clone().normalize();
 
         // 创建垂直于移动方向的向量，用于偏移
@@ -725,7 +725,7 @@ const Person: React.FC<PersonProps> = ({
     };
 
     // useFrame 在每一帧都会调用 - 主要逻辑循环
-    useFrame((state, delta) => {
+    useFrame((_state, delta) => {
         if (!meshRef.current) return;
 
         // 固定位置的人物只需保持在原位

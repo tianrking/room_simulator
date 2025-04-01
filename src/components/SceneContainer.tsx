@@ -1,5 +1,5 @@
 // src/components/SceneContainer.tsx
-import React, { Suspense, ReactNode } from 'react';
+import { Suspense, ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 // 导入 Sky 和 OrbitControls
 import { OrbitControls, Sky } from '@react-three/drei';

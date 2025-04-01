@@ -1,7 +1,7 @@
 // src/components/Room.tsx
 import React, { useMemo } from 'react';
 import * as THREE from 'three';
-import { RoomData, Opening, LightSource } from './roomData'; // Adjust import if needed
+import { RoomData, Opening } from './roomData'; // Adjust import if needed
 
 interface RoomProps {
   roomData: RoomData;

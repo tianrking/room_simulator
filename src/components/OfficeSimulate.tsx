@@ -68,39 +68,39 @@ const OfficeSimulate: React.FC = () => {
   const people = useMemo<PersonData[]>(() => {
     const basePeople = [
       // 固定位置的员工 (前台接待)
-      { id: "receptionist", initialPosition: [0, personY, floorSize / 2 - 4], color: "pink", isStationary: true },
+      { id: "receptionist", initialPosition: [0, personY, floorSize / 2 - 4] as [number, number, number], color: "pink", isStationary: true },
 
       // 办公区员工 (18人)
-      { id: "emp1", initialPosition: [-12, personY, -3], color: "red", defaultHotspot: "desk", role: "worker" },
-      { id: "emp2", initialPosition: [-12, personY, -5], color: "blue", defaultHotspot: "desk", role: "worker" },
-      { id: "emp3", initialPosition: [-12, personY, -7], color: "green", defaultHotspot: "desk", role: "worker" },
-      { id: "emp4", initialPosition: [-9, personY, -3], color: "purple", defaultHotspot: "desk", role: "worker" },
-      { id: "emp5", initialPosition: [-9, personY, -5], color: "orange", defaultHotspot: "desk", role: "worker" },
-      { id: "emp6", initialPosition: [-9, personY, -7], color: "cyan", defaultHotspot: "desk", role: "worker" },
+      { id: "emp1", initialPosition: [-12, personY, -3] as [number, number, number], color: "red", defaultHotspot: "desk", role: "worker" },
+      { id: "emp2", initialPosition: [-12, personY, -5] as [number, number, number], color: "blue", defaultHotspot: "desk", role: "worker" },
+      { id: "emp3", initialPosition: [-12, personY, -7] as [number, number, number], color: "green", defaultHotspot: "desk", role: "worker" },
+      { id: "emp4", initialPosition: [-9, personY, -3] as [number, number, number], color: "purple", defaultHotspot: "desk", role: "worker" },
+      { id: "emp5", initialPosition: [-9, personY, -5] as [number, number, number], color: "orange", defaultHotspot: "desk", role: "worker" },
+      { id: "emp6", initialPosition: [-9, personY, -7] as [number, number, number], color: "cyan", defaultHotspot: "desk", role: "worker" },
 
-      { id: "emp7", initialPosition: [-4, personY, -3], color: "yellow", defaultHotspot: "desk", role: "worker" },
-      { id: "emp8", initialPosition: [-4, personY, -5], color: "magenta", defaultHotspot: "desk", role: "worker" },
-      { id: "emp9", initialPosition: [-4, personY, -7], color: "lime", defaultHotspot: "desk", role: "worker" },
-      { id: "emp10", initialPosition: [-1, personY, -3], color: "indigo", defaultHotspot: "desk", role: "worker" },
-      { id: "emp11", initialPosition: [-1, personY, -5], color: "teal", defaultHotspot: "desk", role: "worker" },
-      { id: "emp12", initialPosition: [-1, personY, -7], color: "maroon", defaultHotspot: "desk", role: "worker" },
+      { id: "emp7", initialPosition: [-4, personY, -3] as [number, number, number], color: "yellow", defaultHotspot: "desk", role: "worker" },
+      { id: "emp8", initialPosition: [-4, personY, -5] as [number, number, number], color: "magenta", defaultHotspot: "desk", role: "worker" },
+      { id: "emp9", initialPosition: [-4, personY, -7] as [number, number, number], color: "lime", defaultHotspot: "desk", role: "worker" },
+      { id: "emp10", initialPosition: [-1, personY, -3] as [number, number, number], color: "indigo", defaultHotspot: "desk", role: "worker" },
+      { id: "emp11", initialPosition: [-1, personY, -5] as [number, number, number], color: "teal", defaultHotspot: "desk", role: "worker" },
+      { id: "emp12", initialPosition: [-1, personY, -7] as [number, number, number], color: "maroon", defaultHotspot: "desk", role: "worker" },
 
-      { id: "emp13", initialPosition: [4, personY, -3], color: "navy", defaultHotspot: "desk", role: "worker" },
-      { id: "emp14", initialPosition: [4, personY, -5], color: "olive", defaultHotspot: "desk", role: "worker" },
-      { id: "emp15", initialPosition: [4, personY, -7], color: "gold", defaultHotspot: "desk", role: "worker" },
-      { id: "emp16", initialPosition: [7, personY, -3], color: "silver", defaultHotspot: "desk", role: "worker" },
-      { id: "emp17", initialPosition: [7, personY, -5], color: "brown", defaultHotspot: "desk", role: "worker" },
-      { id: "emp18", initialPosition: [7, personY, -7], color: "coral", defaultHotspot: "desk", role: "worker" },
+      { id: "emp13", initialPosition: [4, personY, -3] as [number, number, number], color: "navy", defaultHotspot: "desk", role: "worker" },
+      { id: "emp14", initialPosition: [4, personY, -5] as [number, number, number], color: "olive", defaultHotspot: "desk", role: "worker" },
+      { id: "emp15", initialPosition: [4, personY, -7] as [number, number, number], color: "gold", defaultHotspot: "desk", role: "worker" },
+      { id: "emp16", initialPosition: [7, personY, -3] as [number, number, number], color: "silver", defaultHotspot: "desk", role: "worker" },
+      { id: "emp17", initialPosition: [7, personY, -5] as [number, number, number], color: "brown", defaultHotspot: "desk", role: "worker" },
+      { id: "emp18", initialPosition: [7, personY, -7] as [number, number, number], color: "coral", defaultHotspot: "desk", role: "worker" },
 
       // 管理层 (3人)
-      { id: "manager1", initialPosition: [14, personY, -15], color: "black", defaultHotspot: "management", role: "manager" },
-      { id: "manager2", initialPosition: [9, personY, -15], color: "darkblue", defaultHotspot: "management", role: "manager" },
-      { id: "manager3", initialPosition: [4, personY, -15], color: "darkgreen", defaultHotspot: "management", role: "manager" },
+      { id: "manager1", initialPosition: [14, personY, -15] as [number, number, number], color: "black", defaultHotspot: "management", role: "manager" },
+      { id: "manager2", initialPosition: [9, personY, -15] as [number, number, number], color: "darkblue", defaultHotspot: "management", role: "manager" },
+      { id: "manager3", initialPosition: [4, personY, -15] as [number, number, number], color: "darkgreen", defaultHotspot: "management", role: "manager" },
 
       // 访客 (3人) - 随机游荡
-      { id: "visitor1", initialPosition: [0, personY, floorSize / 2 - 6], color: "crimson", role: "visitor" },
-      { id: "visitor2", initialPosition: [2, personY, floorSize / 2 - 6], color: "slateblue", role: "visitor" },
-      { id: "visitor3", initialPosition: [-2, personY, floorSize / 2 - 6], color: "darkgoldenrod", role: "visitor" },
+      { id: "visitor1", initialPosition: [0, personY, floorSize / 2 - 6] as [number, number, number], color: "crimson", role: "visitor" },
+      { id: "visitor2", initialPosition: [2, personY, floorSize / 2 - 6] as [number, number, number], color: "slateblue", role: "visitor" },
+      { id: "visitor3", initialPosition: [-2, personY, floorSize / 2 - 6] as [number, number, number], color: "darkgoldenrod", role: "visitor" },
     ];
 
     // 根据不同的办公室状态修改人员行为
@@ -125,7 +125,8 @@ const OfficeSimulate: React.FC = () => {
             // 所有人从入口附近开始
             const offsetX = THREE.MathUtils.randFloat(-5, 5);
             const offsetZ = THREE.MathUtils.randFloat(-2, 2);
-            modifiedPerson.initialPosition = [offsetX, personY, floorSize / 2 - 5 + offsetZ];
+            // modifiedPerson.initialPosition = [offsetX, personY, floorSize / 2 - 5 + offsetZ];
+            modifiedPerson.initialPosition = [offsetX, personY, floorSize / 2 - 5 + offsetZ] as [number, number, number];
           }
           break;
 

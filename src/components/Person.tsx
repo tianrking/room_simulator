@@ -1,6 +1,8 @@
+// src/components/Person.tsx
 import React, { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { OfficeState } from './OfficeSimulate';
 
 // 定义障碍物的类型
 interface Obstacle {
@@ -38,6 +40,7 @@ interface PersonProps {
   hotspots?: Hotspot[]; // 热点区域列表
   isStationary?: boolean; // 是否是固定位置的人物
   defaultHotspot?: string; // 默认热点类型（例如工位）
+  officeState?: OfficeState; // 当前办公室状态
 }
 
 const Person: React.FC<PersonProps> = ({
@@ -48,7 +51,8 @@ const Person: React.FC<PersonProps> = ({
   obstacles = [], // 默认为空数组
   hotspots = [], // 默认为空数组
   isStationary = false, // 默认为非固定人物
-  defaultHotspot = undefined // 默认没有指定热点
+  defaultHotspot = undefined, // 默认没有指定热点
+  officeState = OfficeState.WORKING // 默认为工作状态
 }) => {
   const meshRef = useRef<THREE.Mesh>(null!); // 用于直接访问 Mesh 对象
   const personRadius = 0.2; // 人物半径 (与圆柱体保持一致)
@@ -90,8 +94,9 @@ const Person: React.FC<PersonProps> = ({
     socialFactor: THREE.MathUtils.randFloat(0.1, 0.9)  // 社交倾向
   });
 
-  // 初始化主工位 - 如果有指定默认热点
+  // 初始化主工位和根据办公室状态设置初始行为
   useEffect(() => {
+    // 找到主工位 - 如果有指定默认热点
     if (defaultHotspot) {
       // 找到与初始位置最近的对应类型热点
       const nearbyHotspots = hotspots
@@ -110,26 +115,87 @@ const Person: React.FC<PersonProps> = ({
     // 记录初始位置以检测卡住状态
     lastPositionRef.current.set(...initialPosition);
     
-    // 为固定位置的人员设置 IDLE 状态，为其他人员设置初始状态
+    // 为固定位置的人员设置 IDLE 状态
     if (isStationary) {
       stateRef.current = PersonState.IDLE;
-    } else {
-      // 如果有默认热点（如工位），将其设置为初始状态
-      if (defaultHotspot) {
-        targetHotspotRef.current = findHotspotByType(defaultHotspot);
-        if (targetHotspotRef.current) {
-          stateRef.current = PersonState.AT_HOTSPOT;
-          scheduleNextActivity();
+      return;
+    }
+    
+    // 根据办公室状态设置初始行为
+    switch (officeState) {
+      case OfficeState.WORKING:
+        // 正常工作模式 - 如果有默认热点（如工位），将其设置为初始状态
+        if (defaultHotspot) {
+          targetHotspotRef.current = findHotspotByType(defaultHotspot);
+          if (targetHotspotRef.current) {
+            stateRef.current = PersonState.AT_HOTSPOT;
+            scheduleNextActivity();
+          } else {
+            stateRef.current = PersonState.IDLE;
+            scheduleRandomWalk();
+          }
         } else {
           stateRef.current = PersonState.IDLE;
           scheduleRandomWalk();
         }
-      } else {
-        stateRef.current = PersonState.IDLE;
-        scheduleRandomWalk();
-      }
+        break;
+        
+      case OfficeState.LUNCH_TIME:
+        // 午餐时间 - 大部分人应该前往午餐区
+        if (defaultHotspot === 'lunch') {
+          // 此人被指定去吃午餐
+          targetHotspotRef.current = findHotspotByType('lunch');
+          if (targetHotspotRef.current) {
+            stateRef.current = PersonState.GOING_TO_HOTSPOT;
+            targetPositionRef.current.copy(targetHotspotRef.current.position);
+          } else {
+            // 找不到午餐区，去其他地方
+            stateRef.current = PersonState.IDLE;
+            scheduleRandomWalk();
+          }
+        } else if (defaultHotspot) {
+          // 此人指定在工位吃饭或继续工作
+          targetHotspotRef.current = findHotspotByType(defaultHotspot);
+          if (targetHotspotRef.current) {
+            stateRef.current = PersonState.AT_HOTSPOT;
+            scheduleNextActivity();
+          } else {
+            stateRef.current = PersonState.IDLE;
+            scheduleRandomWalk();
+          }
+        } else {
+          stateRef.current = PersonState.IDLE;
+          scheduleRandomWalk();
+        }
+        break;
+        
+      case OfficeState.ARRIVING:
+        // 上班时间 - 人们应该从入口移动到各自工位
+        if (defaultHotspot && primaryDeskRef.current) {
+          // 设置为前往工位状态
+          stateRef.current = PersonState.RETURNING_TO_DESK;
+          targetPositionRef.current.copy(primaryDeskRef.current);
+        } else {
+          // 没有指定工位的人随机走动
+          stateRef.current = PersonState.IDLE;
+          scheduleRandomWalk();
+        }
+        break;
+        
+      case OfficeState.LEAVING:
+        // 下班时间 - 人们应该从工位移动到出口
+        targetHotspotRef.current = findHotspotByType('exit');
+        if (targetHotspotRef.current) {
+          stateRef.current = PersonState.GOING_TO_HOTSPOT;
+          targetPositionRef.current.copy(targetHotspotRef.current.position);
+        } else {
+          // 找不到出口，随机走动
+          stateRef.current = PersonState.IDLE;
+          scheduleRandomWalk();
+        }
+        break;
     }
-  }, [isStationary, defaultHotspot, initialPosition, hotspots]);
+  }, [isStationary, defaultHotspot, initialPosition, hotspots, officeState]);
 
   // 按类型查找热点
   const findHotspotByType = (type: string): Hotspot | null => {
@@ -150,6 +216,109 @@ const Person: React.FC<PersonProps> = ({
   const scheduleNextActivity = () => {
     if (isStationary) return; // 静止人物不进行活动计划
     
+    // 根据办公室状态调整行为
+    switch (officeState) {
+      case OfficeState.LUNCH_TIME:
+        handleLunchTimeActivity();
+        break;
+        
+      case OfficeState.ARRIVING:
+        handleArrivingActivity();
+        break;
+        
+      case OfficeState.LEAVING:
+        handleLeavingActivity();
+        break;
+        
+      case OfficeState.WORKING:
+      default:
+        handleNormalWorkActivity();
+        break;
+    }
+  };
+  
+  // 午餐时间的行为处理
+  const handleLunchTimeActivity = () => {
+    // 已经在午餐区的人有60%的几率继续待在那里
+    if (stateRef.current === PersonState.AT_HOTSPOT && targetHotspotRef.current?.type === 'lunch') {
+      if (Math.random() < 0.6) {
+        // 继续吃午餐
+        hotspotDurationRef.current = THREE.MathUtils.randFloat(600, 1800); // 10-30分钟
+        hotspotTimerRef.current = 0;
+        return;
+      }
+    }
+    
+    // 不在午餐区的人有70%的几率去吃午餐
+    if (targetHotspotRef.current?.type !== 'lunch' && Math.random() < 0.7) {
+      targetHotspotRef.current = findHotspotByType('lunch');
+      if (targetHotspotRef.current) {
+        stateRef.current = PersonState.GOING_TO_HOTSPOT;
+        targetPositionRef.current.copy(targetHotspotRef.current.position);
+        return;
+      }
+    }
+    
+    // 其他情况下，回到工位或随机走动
+    if (defaultHotspot && primaryDeskRef.current) {
+      stateRef.current = PersonState.RETURNING_TO_DESK;
+      targetPositionRef.current.copy(primaryDeskRef.current);
+    } else {
+      scheduleRandomWalk();
+    }
+  };
+  
+  // 上班时间的行为处理
+  const handleArrivingActivity = () => {
+    // 大多数人应该前往自己的工位
+    if (defaultHotspot && primaryDeskRef.current) {
+      if (Math.random() < 0.9) { // 90%几率直接去工位
+        stateRef.current = PersonState.RETURNING_TO_DESK;
+        targetPositionRef.current.copy(primaryDeskRef.current);
+        return;
+      }
+    }
+    
+    // 小部分人会先去其他地方（如茶水间、打印区）
+    const morningSpots = ['watercooler', 'kitchen', 'printer'];
+    const spotType = morningSpots[Math.floor(Math.random() * morningSpots.length)];
+    targetHotspotRef.current = findHotspotByType(spotType);
+    
+    if (targetHotspotRef.current) {
+      stateRef.current = PersonState.GOING_TO_HOTSPOT;
+      targetPositionRef.current.copy(targetHotspotRef.current.position);
+    } else {
+      scheduleRandomWalk();
+    }
+  };
+  
+  // 下班时间的行为处理
+  const handleLeavingActivity = () => {
+    // 已在出口的人员会停留一会后消失
+    if (stateRef.current === PersonState.AT_HOTSPOT && targetHotspotRef.current?.type === 'exit') {
+      if (Math.random() < 0.7) {
+        // 继续等待，稍后离开
+        hotspotDurationRef.current = THREE.MathUtils.randFloat(5, 20);
+        hotspotTimerRef.current = 0;
+      } else {
+        // 正式离开（这里可以添加人物消失的效果）
+        meshRef.current.visible = false;
+      }
+      return;
+    }
+    
+    // 不在出口的人应该往出口走
+    targetHotspotRef.current = findHotspotByType('exit');
+    if (targetHotspotRef.current) {
+      stateRef.current = PersonState.GOING_TO_HOTSPOT;
+      targetPositionRef.current.copy(targetHotspotRef.current.position);
+    } else {
+      scheduleRandomWalk();
+    }
+  };
+  
+  // 正常工作时间的行为处理
+  const handleNormalWorkActivity = () => {
     // 如果有指定默认热点，优先考虑回到工位
     if (defaultHotspot && primaryDeskRef.current && stateRef.current !== PersonState.AT_HOTSPOT) {
       // 80%的几率返回工位，20%的几率去其他地方

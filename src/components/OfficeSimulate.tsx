@@ -60,7 +60,7 @@ const OfficeSimulate: React.FC = () => {
 
   // 从外部数据文件导入障碍物
   const obstacles = useMemo<Obstacle[]>(() => officeObstacles(floorSize, wallHeight), [floorSize, wallHeight]);
-  
+
   // 从外部数据文件导入热点区域
   const hotspots = useMemo<Hotspot[]>(() => officeHotspots(floorSize), [floorSize]);
 
@@ -69,7 +69,7 @@ const OfficeSimulate: React.FC = () => {
     const basePeople = [
       // 固定位置的员工 (前台接待)
       { id: "receptionist", initialPosition: [0, personY, floorSize / 2 - 4], color: "pink", isStationary: true },
-      
+
       // 办公区员工 (18人)
       { id: "emp1", initialPosition: [-12, personY, -3], color: "red", defaultHotspot: "desk", role: "worker" },
       { id: "emp2", initialPosition: [-12, personY, -5], color: "blue", defaultHotspot: "desk", role: "worker" },
@@ -77,26 +77,26 @@ const OfficeSimulate: React.FC = () => {
       { id: "emp4", initialPosition: [-9, personY, -3], color: "purple", defaultHotspot: "desk", role: "worker" },
       { id: "emp5", initialPosition: [-9, personY, -5], color: "orange", defaultHotspot: "desk", role: "worker" },
       { id: "emp6", initialPosition: [-9, personY, -7], color: "cyan", defaultHotspot: "desk", role: "worker" },
-      
+
       { id: "emp7", initialPosition: [-4, personY, -3], color: "yellow", defaultHotspot: "desk", role: "worker" },
       { id: "emp8", initialPosition: [-4, personY, -5], color: "magenta", defaultHotspot: "desk", role: "worker" },
       { id: "emp9", initialPosition: [-4, personY, -7], color: "lime", defaultHotspot: "desk", role: "worker" },
       { id: "emp10", initialPosition: [-1, personY, -3], color: "indigo", defaultHotspot: "desk", role: "worker" },
       { id: "emp11", initialPosition: [-1, personY, -5], color: "teal", defaultHotspot: "desk", role: "worker" },
       { id: "emp12", initialPosition: [-1, personY, -7], color: "maroon", defaultHotspot: "desk", role: "worker" },
-      
+
       { id: "emp13", initialPosition: [4, personY, -3], color: "navy", defaultHotspot: "desk", role: "worker" },
       { id: "emp14", initialPosition: [4, personY, -5], color: "olive", defaultHotspot: "desk", role: "worker" },
       { id: "emp15", initialPosition: [4, personY, -7], color: "gold", defaultHotspot: "desk", role: "worker" },
       { id: "emp16", initialPosition: [7, personY, -3], color: "silver", defaultHotspot: "desk", role: "worker" },
       { id: "emp17", initialPosition: [7, personY, -5], color: "brown", defaultHotspot: "desk", role: "worker" },
       { id: "emp18", initialPosition: [7, personY, -7], color: "coral", defaultHotspot: "desk", role: "worker" },
-      
+
       // 管理层 (3人)
       { id: "manager1", initialPosition: [14, personY, -15], color: "black", defaultHotspot: "management", role: "manager" },
       { id: "manager2", initialPosition: [9, personY, -15], color: "darkblue", defaultHotspot: "management", role: "manager" },
       { id: "manager3", initialPosition: [4, personY, -15], color: "darkgreen", defaultHotspot: "management", role: "manager" },
-      
+
       // 访客 (3人) - 随机游荡
       { id: "visitor1", initialPosition: [0, personY, floorSize / 2 - 6], color: "crimson", role: "visitor" },
       { id: "visitor2", initialPosition: [2, personY, floorSize / 2 - 6], color: "slateblue", role: "visitor" },
@@ -107,7 +107,7 @@ const OfficeSimulate: React.FC = () => {
     return basePeople.map(person => {
       // 创建新对象避免修改原对象
       const modifiedPerson = { ...person };
-      
+
       switch (officeState) {
         case OfficeState.LUNCH_TIME:
           // 午餐时间: 大部分人去餐厅/休息区，一些人留在工位
@@ -118,7 +118,7 @@ const OfficeSimulate: React.FC = () => {
             }
           }
           break;
-          
+
         case OfficeState.ARRIVING:
           // 上班时间: 人们从入口移动到各自工位
           if (person.role === 'worker' || person.role === 'manager') {
@@ -128,27 +128,27 @@ const OfficeSimulate: React.FC = () => {
             modifiedPerson.initialPosition = [offsetX, personY, floorSize / 2 - 5 + offsetZ];
           }
           break;
-          
+
         case OfficeState.LEAVING:
           // 下班时间: 人们从工位移动到出口
           if (person.role === 'worker' || person.role === 'manager') {
             modifiedPerson.defaultHotspot = 'exit';
           }
           break;
-          
+
         case OfficeState.WORKING:
         default:
           // 正常工作状态，使用默认配置
           break;
       }
-      
+
       return modifiedPerson;
     });
   }, [floorSize, personY, officeState]);
 
   // 渲染地板颜色
   const getRandomColor = (type: string) => {
-    switch(type) {
+    switch (type) {
       case 'desk': return 0x8B4513; // 棕色
       case 'executive_desk': return 0x4d2e0d; // 深棕色
       case 'sofa': case 'executive_sofa': return 0x3f7eb3; // 蓝色
@@ -172,9 +172,9 @@ const OfficeSimulate: React.FC = () => {
   const StateToggleButtons = () => {
     return (
       <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 100, display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <button 
-          style={{ 
-            padding: '8px 16px', 
+        <button
+          style={{
+            padding: '8px 16px',
             backgroundColor: officeState === OfficeState.WORKING ? '#4CAF50' : '#e0e0e0',
             color: officeState === OfficeState.WORKING ? 'white' : 'black',
             border: 'none',
@@ -186,9 +186,9 @@ const OfficeSimulate: React.FC = () => {
         >
           工作状态
         </button>
-        <button 
-          style={{ 
-            padding: '8px 16px', 
+        <button
+          style={{
+            padding: '8px 16px',
             backgroundColor: officeState === OfficeState.LUNCH_TIME ? '#4CAF50' : '#e0e0e0',
             color: officeState === OfficeState.LUNCH_TIME ? 'white' : 'black',
             border: 'none',
@@ -200,9 +200,9 @@ const OfficeSimulate: React.FC = () => {
         >
           午餐时间
         </button>
-        <button 
-          style={{ 
-            padding: '8px 16px', 
+        <button
+          style={{
+            padding: '8px 16px',
             backgroundColor: officeState === OfficeState.ARRIVING ? '#4CAF50' : '#e0e0e0',
             color: officeState === OfficeState.ARRIVING ? 'white' : 'black',
             border: 'none',
@@ -214,9 +214,9 @@ const OfficeSimulate: React.FC = () => {
         >
           上班时间
         </button>
-        <button 
-          style={{ 
-            padding: '8px 16px', 
+        <button
+          style={{
+            padding: '8px 16px',
             backgroundColor: officeState === OfficeState.LEAVING ? '#4CAF50' : '#e0e0e0',
             color: officeState === OfficeState.LEAVING ? 'white' : 'black',
             border: 'none',
@@ -249,12 +249,12 @@ const OfficeSimulate: React.FC = () => {
         stateInfo = "下班时间: 员工收拾物品，陆续离开办公室";
         break;
     }
-    
+
     return (
-      <div style={{ 
-        position: 'absolute', 
-        top: '10px', 
-        right: '10px', 
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
         backgroundColor: 'rgba(0,0,0,0.7)',
         color: 'white',
         padding: '10px',
@@ -263,8 +263,8 @@ const OfficeSimulate: React.FC = () => {
       }}>
         <h3 style={{ margin: '0 0 8px 0' }}>{stateInfo}</h3>
         <p style={{ margin: '0', fontSize: '14px' }}>
-          人员: {people.length}名 | 
-          障碍物: {obstacles.length}个 | 
+          人员: {people.length}名 |
+          障碍物: {obstacles.length}个 |
           热点区域: {hotspots.length}个
         </p>
       </div>
@@ -278,7 +278,7 @@ const OfficeSimulate: React.FC = () => {
         <StateToggleButtons />
         {renderStateInfo()}
       </Html>
-      
+
       {/* 3D场景 */}
       <group name="OfficeLayout_Enhanced">
         {/* 地面 */}
@@ -289,16 +289,16 @@ const OfficeSimulate: React.FC = () => {
 
         {/* 渲染所有障碍物 */}
         {obstacles.map((obstacle, index) => (
-          <mesh 
+          <mesh
             key={`obstacle-${index}`}
             position={[obstacle.position.x, obstacle.position.y, obstacle.position.z]}
             rotation={[0, obstacle.rotation || 0, 0]}
-            castShadow 
+            castShadow
             receiveShadow
           >
             <boxGeometry args={[obstacle.dimensions.x, obstacle.dimensions.y, obstacle.dimensions.z]} />
-            <meshStandardMaterial 
-              color={getRandomColor(obstacle.type || 'default')} 
+            <meshStandardMaterial
+              color={getRandomColor(obstacle.type || 'default')}
               transparent={obstacle.type?.includes('glass') || false}
               opacity={obstacle.type?.includes('glass') ? 0.4 : 1}
             />
@@ -312,18 +312,20 @@ const OfficeSimulate: React.FC = () => {
         </mesh>
 
         {/* 走廊标记 */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]} receiveShadow>
-          <planeGeometry args={[floorSize * 0.15, floorSize]} />
-          <meshStandardMaterial color={0xf5f5f5} side={THREE.DoubleSide} />
-        </mesh>
-        <mesh rotation={[-Math.PI / 2, Math.PI/2, 0]} position={[0, 0.02, 0]} receiveShadow>
+        {/* 走廊标记 - 优化为地面线条 */}
+        {/* 水平方向的标记 */}
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, 0.01, 0]}
+          receiveShadow
+        >
           <planeGeometry args={[floorSize * 0.15, floorSize]} />
           <meshStandardMaterial color={0xf5f5f5} side={THREE.DoubleSide} />
         </mesh>
 
         {/* 添加人员 */}
         {people.map((person) => (
-          <Person 
+          <Person
             key={`${person.id}-${officeState}`} // 重要: 状态改变时强制重新创建
             id={person.id}
             bounds={personBounds}

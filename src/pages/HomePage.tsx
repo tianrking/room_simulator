@@ -7,6 +7,7 @@ import RotatingTorusKnot from '../components/RotatingTorusKnot'; // 添加这个
 import Room from '../components/Room';
 
 import { myRoomData } from '../components/roomData'; 
+import OfficeSimulate from '../components/OfficeSimulate';
 
 function HomePage() {
   return (
@@ -15,7 +16,9 @@ function HomePage() {
       {/* <RotatingTorusKnot /> */}
       {/* <Room /> */}
 
-      <Room roomData={myRoomData} showPlaceholders={true} />
+      {/* <Room roomData={myRoomData} showPlaceholders={true} /> */}
+
+      <OfficeSimulate />
     </SceneContainer>
   );
 }

@@ -1,0 +1,182 @@
+/* src/App.css */
+/* --- CSS 变量定义 --- */
+:root {
+  --bg-color: #2c3e50;
+  --panel-bg: #34495e;
+  --room-bg: #4a627a;
+  --room-border: #5e7a94;
+  --room-bg-texture: linear-gradient(rgba(255,255,255,0.01), rgba(0,0,0,0.02));
+  --text-light: #ecf0f1;
+  --text-muted: #bdc3c7;
+  --light-off-bg: #7f8c8d;
+  --light-on-bg: #f1c40f;
+  --light-on-glow: rgba(241, 196, 15, 0.6);
+  --door-closed-bg: #8e44ad;
+  --door-open-bg: #9b59b6;
+  --door-small-closed-bg: #733a8c;
+  --door-small-open-bg: #834aa0;
+  --window-frame-bg: #aed6f1;
+  --window-pane-bg: #d6eaf8;
+  --window-open-pane-bg: #eaf2f8;
+  --ac-off-bg: #95a5a6;
+  --ac-on-bg: #5dade2;
+  --ac-airflow-color: rgba(236, 240, 241, 0.7);
+  --co2-normal-color: #2ecc71;
+  --co2-high-color: #f39c12;
+  --co2-veryhigh-color: #e74c3c;
+}
+
+/* --- 基本样式 --- */
+body {
+  display: flex; justify-content: center; align-items: center;
+  min-height: 100vh; margin: 0; background-color: var(--bg-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: var(--text-light);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.control-panel {
+  width: 750px; height: 550px;
+  background-color: var(--panel-bg); border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); display: flex;
+  padding: 25px; box-sizing: border-box;
+}
+
+/* --- 房间布局区域 --- */
+.room-layout {
+  flex-basis: 60%; border: 2px solid var(--room-border); border-radius: 10px;
+  position: relative; background-color: var(--room-bg);
+  background-image: var(--room-bg-texture); margin-right: 25px; overflow: hidden;
+}
+
+/* --- 可交互元素 --- */
+.interactive-element { position: absolute; cursor: pointer; transition: all 0.3s ease; }
+
+/* --- 灯光 --- */
+.light {
+  width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center;
+  align-items: center; background-color: var(--light-off-bg); box-shadow: none;
+}
+.light svg { stroke: rgba(0,0,0,0.5); transition: stroke 0.3s ease; }
+.light.on { background-color: var(--light-on-bg); box-shadow: 0 0 18px 6px var(--light-on-glow); }
+.light.on svg { stroke: rgba(0,0,0,0.8); }
+#light-1 { top: 20%; left: 20%; }
+#light-2 { top: 20%; right: 20%; }
+#light-3 { bottom: 20%; left: 20%; }
+#light-4 { bottom: 20%; right: 20%; }
+
+/* --- 大门样式 --- */
+.door-opening {
+  height: 10px; background-color: var(--room-border);
+  position: absolute; overflow: hidden;
+}
+.door-opening-large { width: 70px; top: 0; }
+#door-opening-large-left { left: 20%; transform: translateX(-50%); }
+#door-opening-large-right { right: 20%; transform: translateX(50%); }
+.door-opening-small { width: 50px; bottom: 0; left: 50%; transform: translateX(-50%); }
+
+.door {
+  height: 8px; position: absolute; bottom: 1px;
+  left: 50%; transform: translateX(-50%);
+  transition: transform 0.5s ease-in-out, background-color 0.3s ease;
+  border-radius: 2px;
+}
+.door-large-left, .door-large-right { width: 65px; background-color: var(--door-closed-bg); }
+.door-small { width: 45px; background-color: var(--door-small-closed-bg); }
+
+/* 门的打开动画 */
+.door-large-left.open { transform: translateX(calc(-50% - 60px)); }
+.door-large-right.open { transform: translateX(calc(-50% + 60px)); }
+.door-small.open { transform: translateX(calc(-50% - 40px)); }
+
+.door.open { background-color: var(--door-open-bg); }
+.door-small.open { background-color: var(--door-small-open-bg); }
+
+/* --- 窗户样式 --- */
+.window {
+  width: 100px; height: 10px; background-color: var(--window-frame-bg);
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  border-radius: 2px; cursor: pointer; box-shadow: inset 0 0 3px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.window-pane {
+  width: 100%; height: 100%; background-color: var(--window-pane-bg);
+  position: absolute; top: 0; left: 0;
+  transition: transform 0.4s ease-in-out, background-color 0.3s ease;
+  border-left: 2px solid rgba(0,0,0,0.1); border-right: 2px solid rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+.window.open .window-pane {
+  background-color: var(--window-open-pane-bg);
+  transform: translateX(-60%);
+}
+
+/* --- 空调样式 --- */
+.ac {
+  width: 25px; height: 50px; background-color: var(--ac-off-bg);
+  position: absolute; left: 5%; top: 50%; transform: translateY(-50%);
+  border-radius: 3px; box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.ac::before, .ac::after {
+  content: ''; position: absolute; width: 3px; height: 10px;
+  background-color: var(--ac-airflow-color); border-radius: 2px;
+  opacity: 0; animation: airflow 1.5s linear infinite;
+}
+.ac::before { left: 6px; animation-delay: 0s; }
+.ac::after { right: 6px; animation-delay: 0.75s; }
+.ac.on { background-color: var(--ac-on-bg); }
+.ac.on::before, .ac.on::after { opacity: 1; }
+@keyframes airflow { 0% { transform: translateY(-15px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(55px); opacity: 0; } }
+
+/* --- 仪表板区域 --- */
+.dashboard {
+  flex-basis: 40%; display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  background-color: rgba(0, 0, 0, 0.15); border-radius: 10px;
+  padding: 20px 15px; box-sizing: border-box;
+}
+.dashboard-row {
+   width: 100%; display: flex; justify-content: space-around;
+   align-items: center; margin-bottom: 25px;
+}
+.dashboard-row:last-child { margin-bottom: 0; }
+.dashboard-row.time-row {
+  justify-content: center; align-items: center; /* Ensure icon and text div are centered */
+  margin-bottom: 30px;
+}
+
+.dashboard-item { /* Used for sensor pairs */
+   display: flex; align-items: center; flex-basis: 48%;
+   min-width: 0; justify-content: center;
+}
+
+.sensor-icon, .time-icon {
+  margin-right: 8px;
+  opacity: 0.8; flex-shrink: 0;
+  color: var(--text-light);
+}
+.sensor-details, .time-details {
+  text-align: center; /* Center text within details block */
+  flex-grow: 1; min-width: 0;
+}
+.sensor-label, .time-label {
+  font-size: 16px; color: var(--text-muted); margin-bottom: 4px;
+}
+.sensor-value, .time-value {
+  font-size: 26px; font-weight: bold; color: var(--text-light);
+}
+.sensor-unit {
+   font-size: 14px; margin-left: 4px; color: var(--text-muted);
+}
+#co2-value { transition: color 0.5s ease; }
+
